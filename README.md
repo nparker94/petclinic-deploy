@@ -1,0 +1,1 @@
+TODO sort out host verification ask yes/no on connect

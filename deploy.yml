@@ -1,0 +1,65 @@
+---
+- hosts: all
+
+  vars:
+    deploy_version: 4.0
+
+  tasks:
+    - name: Updating apt repo
+      apt:
+        update_cache: yes
+      become: true
+
+    - name: Install java8
+      apt:
+        state: latest
+        pkg: openjdk-8-jdk
+      become: true
+
+    - name: Install tomcat7
+      apt:
+        state: latest
+        pkg: tomcat7
+      become: true
+
+    - name: Checkout source code
+      git:
+        repo: 'https://github.com/secretescapes/grails-petclinic'
+        dest: /tmp/checkout
+        version: "{{ deploy_version }}"
+
+    - name: Build war
+      shell: ./grailsw war
+      environment:
+        JAVA_HOME: /usr/lib/jvm/java-8-openjdk-amd64
+      args:
+        chdir: /tmp/checkout
+      become: true
+
+    - name: Move war into tomcat webapps dir
+      shell: cp target/petclinic-"{{ deploy_version }}".war /var/lib/tomcat7/webapps/petclinic.war
+      args:
+        chdir: /tmp/checkout
+      become: true
+
+    - name: Change permissions on tomcat directory to allow db lock creation
+      file:
+        path: /var/lib/tomcat7
+        state: directory
+        mode: 0755
+        group: tomcat7
+        owner: tomcat7
+      become: true
+
+    - name: Change server.xml to have petclinic as root
+      lineinfile:
+        insertbefore: '</Host>'
+        line: '<Context path="" docBase="petclinic" debug="0" reloadable="true"></Context>'
+        path: /etc/tomcat7/server.xml
+        state: present
+      become: true
+
+    - name: Restart tomcat
+      service: name=tomcat7 state=restarted
+      become: true
+
