@@ -25,7 +25,7 @@
     - name: Checkout source code
       git:
         repo: 'https://github.com/secretescapes/grails-petclinic'
-        dest: /tmp/checkout
+        dest: src
         version: "{{ deploy_version }}"
 
     - name: Build war
@@ -33,13 +33,13 @@
       environment:
         JAVA_HOME: /usr/lib/jvm/java-8-openjdk-amd64
       args:
-        chdir: /tmp/checkout
+        chdir: src
       become: true
 
     - name: Move war into tomcat webapps dir
       shell: cp target/petclinic-"{{ deploy_version }}".war /var/lib/tomcat7/webapps/petclinic.war
       args:
-        chdir: /tmp/checkout
+        chdir: src
       become: true
 
     - name: Change permissions on tomcat directory to allow db lock creation
