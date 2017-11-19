@@ -2,7 +2,7 @@
 - hosts: all
 
   vars:
-    deploy_version: 4.0
+    deploy_version: 3.0
 
   tasks:
     - name: Updating apt repo
