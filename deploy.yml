@@ -59,6 +59,22 @@
         state: present
       become: true
 
+    - name: Change server.xml so tomcat runs on port 80
+      lineinfile:
+        regexp: '<Connector port="8080"'
+        line: '<Connector port="80"'
+        path: /etc/tomcat7/server.xml
+        state: present
+      become: true
+
+    - name: Allow tomcat to bind on port 80
+      lineinfile:
+        regexp: '#AUTHBIND=no'
+        line: 'AUTHBIND=yes'
+        path: /etc/deafult/tomcat7
+        state: present
+      become: true
+
     - name: Restart tomcat
       service: name=tomcat7 state=restarted
       become: true

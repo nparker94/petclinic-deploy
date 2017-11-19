@@ -13,18 +13,11 @@ install:
   - pip install ansible
 
 script:
-  # We'll add some commands to test the role here.
+  # Check playbook syntac
   - "ansible-playbook -i tests/testinventory tests/test.yml -vv --syntax-check"
 
+ # Check playbook runs successfully
   - "ansible-playbook -i tests/testinventory tests/test.yml -vv --connection=local --sudo"
-
-  # Run the role/playbook again, checking to make sure it's idempotent.
-  - >
-    ansible-playbook -i tests/testinventory tests/test.yml --connection=local --sudo
-    | grep -q 'changed=0.*failed=0'
-    && (echo 'Idempotence test: pass' && exit 0)
-    || (echo 'Idempotence test: fail' && exit 1)
-
 
   # Make sure Pet Clinic is running.
   - >
