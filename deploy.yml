@@ -71,7 +71,7 @@
       lineinfile:
         regexp: '#AUTHBIND=no'
         line: 'AUTHBIND=yes'
-        path: /etc/deafult/tomcat7
+        path: /etc/default/tomcat7
         state: present
       become: true
 
