@@ -1,0 +1,42 @@
+## Customize deployment commands
+deployment:
+  staging:
+    branch: master
+    heroku:
+      appname: foo-bar-123
+
+version: 2
+jobs:
+  build:
+    machine:
+      java:
+        version: openjdk8
+    steps:
+      - checkout
+      - run:
+          command: echo "BUILD START..."
+          command: ./grailsw war target/petclinic.war
+
+  test:
+    machine:
+      python:
+        version: 2.7
+    steps:
+#      - checkout
+#          post:
+#              - git clone ...
+
+      - run:
+          command: echo "RUN TESTS.."
+          command: pip install ansible
+          command: "ansible-playbook -i tests/testinventory tests/test.yml -vv --syntax-check"
+
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
