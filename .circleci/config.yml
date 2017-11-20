@@ -15,6 +15,7 @@ jobs:
       - run: echo "BUILD START..."
       - run: git clone --branch 3.0 https://github.com/secretescapes/grails-petclinic
       - run: cd grails-petclinic && ./grailsw war
+      - run: mv petclinic-3.0.war $CIRCLE_ARTIFACTS/petclinic-3.0.war
 
   test:
     docker:
@@ -24,7 +25,9 @@ jobs:
 #          post:
 #              - git clone ...
 
-      - run: pip install ansible
+      - run: sudo pip install ansible
+      - run: cp $CIRCLE_ARTIFACTS/petclinic-3.0.war target/petclinic-3.0.war
+      - run: ansible-playbook -i tests/testinventory tests/test.yml -vv --syntax-check
 
 workflows:
   version: 2
