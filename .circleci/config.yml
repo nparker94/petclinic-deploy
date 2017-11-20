@@ -5,26 +5,23 @@ jobs:
       - image: circleci/openjdk:8-jdk
     steps:
       - checkout
-      - run: echo "BUILD START..."
       - run: git clone --branch 3.0 https://github.com/secretescapes/grails-petclinic
       - run: cd grails-petclinic && ./grailsw war
       - store_artifacts:
           path: grails-petclinic/target/petclinic-3.0.war
       - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory
           root: grails-petclinic/target
-          # Must be relative path from root
           paths:
             - petclinic-3.0.war
 
   test:
     docker:
-      - image: geerlingguy/docker-ubuntu1604-ansible
+      - image: ubuntu:16.04
     steps:
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: /tmp/target
+      - run: sudo apt-get update -qq
       - run: sudo pip install ansible
       - run: ansible-playbook -i tests/testinventory tests/test.yml -vv --syntax-check --extra-vars "path_to_war=petclinic-3.0.war"
       - run: ansible-playbook -i tests/testinventory tests/test.yml -vvv --connection=local --sudo --extra-vars "path_to_war=petclinic-3.0.war"
@@ -32,11 +29,10 @@ jobs:
 
   deploy:
     docker:
-    - image: geerlingguy/docker-ubuntu1604-ansible
+    - image: ubuntu:16.04
     steps:
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: /tmp/target
       - run: sudo pip install ansible
       - run: ansible-playbook -i hosts deploy.yml --private-key ?? --extra-vars "path_to_war=petclinic-3.0.war"
