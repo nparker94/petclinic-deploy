@@ -14,27 +14,28 @@ jobs:
           paths:
             - petclinic-3.0.war
 
-  test:
-    docker:
-      - image: ubuntu:16.04
-    steps:
-      - checkout
-      - attach_workspace:
-          at: /tmp/target
-      - run: sudo apt-get update -qq
-      - run: sudo pip install ansible
-      - run: ansible-playbook -i tests/testinventory tests/test.yml -vv --syntax-check --extra-vars "path_to_war=petclinic-3.0.war"
-      - run: ansible-playbook -i tests/testinventory tests/test.yml -vvv --connection=local --sudo --extra-vars "path_to_war=petclinic-3.0.war"
-      - run: curl --insecure -s -o /dev/null -w "%{http_code}" http://localhost:80 | grep -q '200' && (echo 'Status 200' && exit 0) || (echo 'Fail' && exit 1)
+#  test:
+#    docker:
+#      - image: circleci/python:2.7
+#    steps:
+#      - checkout
+#      - attach_workspace:
+#          at: /tmp/target
+#      - run: sudo apt-get update -qq
+#      - run: sudo pip install ansible
+#      - run: ansible-playbook -i tests/testinventory tests/test.yml -vv --syntax-check --extra-vars "path_to_war=petclinic-3.0.war"
+#      - run: ansible-playbook -i tests/testinventory tests/test.yml -vvv --connection=local --sudo --extra-vars "path_to_war=petclinic-3.0.war"
+#      - run: curl --insecure -s -o /dev/null -w "%{http_code}" http://localhost:80 | grep -q '200' && (echo 'Status 200' && exit 0) || (echo 'Fail' && exit 1)
 
   deploy:
     docker:
-    - image: ubuntu:16.04
+    - image: circleci/python:2.7
     steps:
       - checkout
       - attach_workspace:
           at: /tmp/target
       - run: sudo pip install ansible
+      - run: ansible-playbook -i tests/testinventory tests/test.yml -vv --syntax-check --extra-vars "path_to_war=petclinic-3.0.war"
       - run: ansible-playbook -i hosts deploy.yml --private-key ?? --extra-vars "path_to_war=petclinic-3.0.war"
 
 workflows:
@@ -42,10 +43,10 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - test:
-          requires:
-            - build
+#      - test:
+#          requires:
+#            - build
       - deploy:
           requires:
-            - build
+#            - build
             - test
