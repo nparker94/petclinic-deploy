@@ -11,7 +11,7 @@ jobs:
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
-      - checkout
+      - checkout:
           post:
             - git clone https://github.com/secretescapes/grails-petclinic
       - run: echo "BUILD START..."
@@ -22,7 +22,7 @@ jobs:
     docker:
       - image: circleci/python:2.7
     steps:
-#      - checkout
+#      - checkout:
 #          post:
 #              - git clone ...
 
