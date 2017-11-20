@@ -13,7 +13,8 @@ jobs:
     steps:
       - checkout
       - run: echo "BUILD START..."
-      - run: ./grailsw war target/petclinic.war
+      - run: ls
+      - run: ./grailsw war
 
   test:
     docker:
