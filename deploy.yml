@@ -29,7 +29,7 @@
         version: "{{ deploy_version }}"
 
     - name: Build war
-      shell: ./grailsw war
+      shell: ./grailsw war target/petclinic-"{{ deploy_version }}".war
       environment:
         JAVA_HOME: /usr/lib/jvm/java-8-openjdk-amd64
       args:
@@ -51,20 +51,10 @@
         owner: tomcat7
       become: true
 
-    - name: Change server.xml to have petclinic as root
-      lineinfile:
-        insertbefore: '</Host>'
-        line: '<Context path="" docBase="petclinic" debug="0" reloadable="true"></Context>'
-        path: /etc/tomcat7/server.xml
-        state: present
-      become: true
-
-    - name: Change server.xml so tomcat runs on port 80
-      lineinfile:
-        regexp: '<Connector port="8080"'
-        line: '<Connector port="80"'
-        path: /etc/tomcat7/server.xml
-        state: present
+    - name: Add tomcat server.xml with custom config to run app on port 80 at the root context
+      template:
+        src: server.xml
+        dest: /etc/tomcat7/server.xml
       become: true
 
     - name: Allow tomcat to bind on port 80
