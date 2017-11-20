@@ -3,6 +3,7 @@
 
   vars:
     path_to_war: target/petclinic.war
+    deploy_version: 3.0
 
   tasks:
     - name: Updating apt repo
@@ -23,9 +24,9 @@
       become: true
 
     - name: Move war into tomcat webapps dir
-      shell: cp "{{ path_to_war }}" /var/lib/tomcat7/webapps/petclinic.war
-      args:
-        chdir: src
+      copy:
+        src: "{{ path_to_war }}"
+        dest: /var/lib/tomcat7/webapps/petclinic-{{deploy_version}}.war
       become: true
 
     - name: Change permissions on tomcat directory to allow db lock creation
