@@ -17,7 +17,7 @@ script:
   - "ansible-playbook -i tests/testinventory tests/test.yml -vv --syntax-check"
 
  # Check playbook runs successfully
-  - "ansible-playbook -i tests/testinventory tests/test.yml -vv --connection=local --sudo"
+  - "ansible-playbook -i tests/testinventory tests/test.yml -vvv --connection=local --sudo"
 
   # Make sure Pet Clinic is running.
   - >
