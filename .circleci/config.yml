@@ -48,5 +48,5 @@ workflows:
 #            - build
       - deploy:
           requires:
-#            - build
-            - test
+            - build
+#            - test
