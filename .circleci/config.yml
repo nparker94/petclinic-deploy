@@ -19,21 +19,20 @@ jobs:
 
   test:
     docker:
-      - image: circleci/python:2.7
+      - image: geerlingguy/docker-ubuntu1604-ansible
     steps:
       - checkout
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: /tmp/target
       - run: sudo pip install ansible
-    #  - run: cp /tmp/target/petclinic-3.0.war target/petclinic.war
       - run: ansible-playbook -i tests/testinventory tests/test.yml -vv --syntax-check --extra-vars "path_to_war=petclinic-3.0.war"
       - run: ansible-playbook -i tests/testinventory tests/test.yml -vvv --connection=local --sudo --extra-vars "path_to_war=petclinic-3.0.war"
       - run: curl --insecure -s -o /dev/null -w "%{http_code}" http://localhost:80 | grep -q '200' && (echo 'Status 200' && exit 0) || (echo 'Fail' && exit 1)
 
   deploy:
     docker:
-    - image: circleci/python:2.7
+    - image: geerlingguy/docker-ubuntu1604-ansible
     steps:
       - checkout
       - attach_workspace:
