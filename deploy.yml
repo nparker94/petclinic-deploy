@@ -2,7 +2,7 @@
 - hosts: all
 
   vars:
-    deploy_version: 3.0
+    path_to_war: target/petclinic.war
 
   tasks:
     - name: Updating apt repo
@@ -22,22 +22,8 @@
         pkg: tomcat7
       become: true
 
-    - name: Checkout source code
-      git:
-        repo: 'https://github.com/secretescapes/grails-petclinic'
-        dest: src
-        version: "{{ deploy_version }}"
-
-    - name: Build war
-      shell: ./grailsw war target/petclinic-"{{ deploy_version }}".war
-      environment:
-        JAVA_HOME: /usr/lib/jvm/java-8-openjdk-amd64
-      args:
-        chdir: src
-      become: true
-
     - name: Move war into tomcat webapps dir
-      shell: cp target/petclinic-"{{ deploy_version }}".war /var/lib/tomcat7/webapps/petclinic.war
+      shell: cp "{{ path_to_war }}" /var/lib/tomcat7/webapps/petclinic.war
       args:
         chdir: src
       become: true
