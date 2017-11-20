@@ -12,9 +12,8 @@ jobs:
       - image: circleci/openjdk:8-jdk
     steps:
       - checkout
-      - run:
-        command: echo "BUILD START..."
-        command: ./grailsw war target/petclinic.war
+      - run: echo "BUILD START..."
+      - run: ./grailsw war target/petclinic.war
 
   test:
     docker:
@@ -24,10 +23,7 @@ jobs:
 #          post:
 #              - git clone ...
 
-      - run:
-        docker:
-      # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
+      - run: pip install ansible
 
 workflows:
   version: 2
