@@ -8,29 +8,26 @@ deployment:
 version: 2
 jobs:
   build:
-    machine:
-      java:
-        version: openjdk8
+    docker:
+      - image: circleci/openjdk:8-jdk
     steps:
       - checkout
       - run:
-          command: echo "BUILD START..."
-          command: ./grailsw war target/petclinic.war
+        command: echo "BUILD START..."
+        command: ./grailsw war target/petclinic.war
 
   test:
-    machine:
-      python:
-        version: 2.7
+    docker:
+      - image: circleci/python:2.7
     steps:
 #      - checkout
 #          post:
 #              - git clone ...
 
       - run:
-          command: echo "RUN TESTS.."
-          command: pip install ansible
-          command: "ansible-playbook -i tests/testinventory tests/test.yml -vv --syntax-check"
-
+        docker:
+      # specify the version you desire here
+      - image: circleci/openjdk:8-jdk
 
 workflows:
   version: 2
