@@ -3,7 +3,7 @@
 
   vars:
     path_to_war: target/petclinic.war
-    deploy_version: 3.0
+    deploy_version: 4.0
 
   tasks:
     - name: Updating apt repo
