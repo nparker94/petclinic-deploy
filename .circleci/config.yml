@@ -10,18 +10,36 @@ jobs:
       - run: cd grails-petclinic && ./grailsw war
       - store_artifacts:
           path: grails-petclinic/target/petclinic-3.0.war
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory
+          root: grails-petclinic
+          # Must be relative path from root
+          paths:
+            - target
 
   test:
     docker:
       - image: circleci/python:2.7
     steps:
-#      - checkout:
-#          post:
-#              - git clone ...
-
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: /tmp/target
       - run: sudo pip install ansible
-      - run: cp $CIRCLE_ARTIFACTS/petclinic-3.0.war target/petclinic-3.0.war
+      - run: cp /tmp/target/petclinic-3.0.war target/petclinic.war
       - run: ansible-playbook -i tests/testinventory tests/test.yml -vv --syntax-check
+      - run: ansible-playbook -i tests/testinventory tests/test.yml -vvv --connection=local --sudo
+      - run:  curl --insecure -s -o /dev/null -w "%{http_code}" http://localhost:80
+                 | grep -q '200'
+                 && (echo 'Status code 200 test: pass' && exit 0)
+                 || (echo 'Status code 200 test: fail' && exit 1)
+
+  deploy:
+  docker:
+  - image: circleci/python:2.7
+  steps:
+    - run: sudo pip install ansible
+    - run: cp $CIRCLE_ARTIFACTS/petclinic-3.0.war target/petclinic.war
+    - run: ansible-playbook -i hosts deploy.yml --private-key #TODOD --extra-vars "deploy_version=5.0"
 
 workflows:
   version: 2
