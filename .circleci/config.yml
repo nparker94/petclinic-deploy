@@ -12,6 +12,8 @@ jobs:
       - image: circleci/openjdk:8-jdk
     steps:
       - checkout
+          post:
+            - git clone https://github.com/secretescapes/grails-petclinic
       - run: echo "BUILD START..."
       - run: ls
       - run: ./grailsw war
