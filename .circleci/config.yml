@@ -14,8 +14,7 @@ jobs:
       - checkout
       - run: echo "BUILD START..."
       - run: git clone --branch 3.0 https://github.com/secretescapes/grails-petclinic
-      - run: cd grails-petclinic
-      - run: ./grailsw war
+      - run: ./grails-petclinic/grailsw war
 
   test:
     docker:
