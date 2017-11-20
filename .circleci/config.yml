@@ -12,10 +12,10 @@ jobs:
           path: grails-petclinic/target/petclinic-3.0.war
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory
-          root: grails-petclinic
+          root: grails-petclinic/target
           # Must be relative path from root
           paths:
-            - target
+            - petclinic-3.0.war
 
   test:
     docker:
@@ -44,5 +44,8 @@ workflows:
     jobs:
       - build
       - test:
+          requires:
+            - build
+      - deploy:
           requires:
             - build
