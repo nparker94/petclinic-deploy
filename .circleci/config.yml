@@ -28,9 +28,7 @@ jobs:
       - run: cp /tmp/target/petclinic-3.0.war target/petclinic.war
       - run: ansible-playbook -i tests/testinventory tests/test.yml -vv --syntax-check
       - run: ansible-playbook -i tests/testinventory tests/test.yml -vvv --connection=local --sudo
-      - run: | curl --insecure -s -o /dev/null -w "%{http_code}" http://localhost:80 | grep -q '200'
-                 && (echo 'Status code 200 test: pass' && exit 0)
-                 || (echo 'Status code 200 test: fail' && exit 1)
+      - run: curl --insecure -s -o /dev/null -w "%{http_code}" http://localhost:80 | grep -q '200' && (echo 'Status 200' && exit 0) || (echo 'Fail' && exit 1)
 
   deploy:
     docker:
