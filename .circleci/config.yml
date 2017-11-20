@@ -1,10 +1,3 @@
-## Customize deployment commands
-deployment:
-  staging:
-    branch: master
-    heroku:
-      appname: foo-bar-123
-
 version: 2
 jobs:
   build:
@@ -14,8 +7,7 @@ jobs:
       - checkout
       - run: echo "BUILD START..."
       - run: git clone --branch 3.0 https://github.com/secretescapes/grails-petclinic
-      - run: cd grails-petclinic && ./grailsw war
-      - run: mv petclinic-3.0.war $CIRCLE_ARTIFACTS/petclinic-3.0.war
+      - run: cd grails-petclinic && ./grailsw war && mv target/petclinic-3.0.war $CIRCLE_ARTIFACTS/petclinic-3.0.war
 
   test:
     docker:
